@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 from typing import Dict
-from naptha_sdk.schemas import AgentRunInput
-from naptha_sdk.user import sign_consumer_id
-from naptha_sdk.utils import get_logger
-from module_template.schemas import InputSchema
+from naptha_sdk.schemas import AgentRunInput # type: ignore
+from naptha_sdk.user import sign_consumer_id # type: ignore 
+from naptha_sdk.utils import get_logger # type: ignore 
+from github_integration_tool.schemas import InputSchema # type: ignore
 
 load_dotenv()
 
@@ -29,13 +29,13 @@ def run(module_run: Dict):
 
 if __name__ == "__main__":
     import asyncio
-    from naptha_sdk.client.naptha import Naptha
-    from naptha_sdk.configs import setup_module_deployment
+    from naptha_sdk.client.naptha import Naptha # type: ignore 
+    from naptha_sdk.configs import setup_module_deployment # type: ignore
     import os
 
     naptha = Naptha()
 
-    deployment = asyncio.run(setup_module_deployment("agent", "module_template/configs/deployment.json", node_url = os.getenv("NODE_URL")))
+    deployment = asyncio.run(setup_module_deployment("agent", "github_integration_tool/configs/deployment.json", node_url = os.getenv("NODE_URL")))
 
     input_params = {
         "func_name": "func",
@@ -46,7 +46,8 @@ if __name__ == "__main__":
         "inputs": input_params,
         "deployment": deployment,
         "consumer_id": naptha.user.id,
-        "signature": sign_consumer_id(naptha.user.id, os.getenv("PRIVATE_KEY_FULL_PATH"))
+        # "signature": sign_consumer_id(naptha.user.id, os.getenv("PRIVATE_KEY_FULL_PATH"))
+        "signature": ''
     }
 
     response = run(module_run)
