@@ -36,7 +36,6 @@ class GitHubRepo:
     def get_file_content(self, inputs: InputSchema):
         try:
             file_content = self.repo.get_contents(inputs.file_path)
-            print(f"file connn: {file_content}")
             if file_content.size > 1000000:  # 1MB limit
                 return "File is too large to fetch content directly."
             content = base64.b64decode(file_content.content).decode('utf-8')
@@ -44,25 +43,36 @@ class GitHubRepo:
         except Exception as e:
             return f"Error fetching file: {str(e)}"
 
-    def get_directory_structure(self, path="", prefix="", max_depth=2, current_depth=0):
+    def get_directory_structure(self, path="", prefix="", max_depth=2, current_depth=0, is_last=True):
         if current_depth > max_depth:
             return []
+        try:
+            contents = self.repo.get_contents(path)
+        except Exception as e:
+            return [f"{prefix}Error reading path {path}: {str(e)}"]
 
-        contents = self.repo.get_contents(path)
-        structure = []
-        for content in contents:
+        contents = sorted(contents, key=lambda x: (x.type != 'dir', x.name.lower()))
+        tree_lines = []
+
+        for idx, content in enumerate(contents):
+            is_last_item = idx == len(contents) - 1
+            connector = "└── " if is_last_item else "├── "
+
+            line = f"{prefix}{connector}{content.name}"
             if content.type == "dir":
-                structure.append(f"{prefix}{content.name}/")
-                if current_depth < max_depth:
-                    structure.extend(self.get_directory_structure(
-                        content.path, 
-                        prefix + "  ", 
-                        max_depth, 
-                        current_depth + 1
-                    ))
+                line += "/"
+                tree_lines.append(line)
+                extension = "    " if is_last_item else "│   "
+                tree_lines.extend(self.get_directory_structure(
+                    path=content.path,
+                    prefix=prefix + extension,
+                    max_depth=max_depth,
+                    current_depth=current_depth + 1,
+                    is_last=is_last_item
+                ))
             else:
-                structure.append(f"{prefix}{content.name}")
-        return structure
+                tree_lines.append(line)
+        return tree_lines
     
     def parse_repo_url(self, url):
         if "github.com/" not in url:
@@ -77,7 +87,10 @@ def run(module_run: Dict):
     method = getattr(basic_module, module_run.inputs.tool_name, None)
     if not method:
         raise ValueError(f"Method {module_run.inputs.tool_name} not found")
-    return method(module_run.inputs)
+    if module_run.inputs.tool_name == "get_directory_structure":
+        return method("")
+    else:
+        return method(module_run.inputs)
 
 if __name__ == "__main__":
     import asyncio
@@ -89,14 +102,19 @@ if __name__ == "__main__":
 
     deployment = asyncio.run(setup_module_deployment("tool", "github_integration_tool/configs/deployment.json", node_url = os.getenv("NODE_URL")))
     
-    input_params = {
+    input_params_1 = {
         "tool_name": "get_file_content",
         "repo_url": "https://github.com/kozuedoingregression/attention-is-all-you-need",
-        "file_path": "test.py"
+        "file_path": "transformer/transformer_de_to_en.py"
     }
 
+    input_params_2 = {
+        "tool_name": "get_directory_structure",
+        "repo_url": "https://github.com/kozuedoingregression/Neo-vim-Config",
+    }
+    
     module_run = {
-        "inputs": input_params,
+        "inputs": input_params_2,
         "deployment": deployment,
         "consumer_id": naptha.user.id,
         # "signature": sign_consumer_id(naptha.user.id, os.getenv("PRIVATE_KEY_FULL_PATH"))
@@ -105,4 +123,7 @@ if __name__ == "__main__":
 
     response = run(module_run)
 
-    print("Response: ", response)
+    if module_run['inputs']['tool_name'] == 'get_directory_structure':
+        print("\n".join(response))
+    else:
+        print("Response:", response)
