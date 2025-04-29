@@ -1,60 +1,9 @@
-# Naptha Module Template
+# GitHub Integration Tool
 
-This is a base module template for creating agent, tool, agent orchestrator, environment, knowledge base and memory modules. You can check out other examples of modules using the CLI commands with the [Naptha SDK](https://github.com/NapthaAI/naptha-sdk). 
+This is a Naptha tool module for for interacting with GitHub repositories, including fetching
+file contents, indexing repository files, and searching through indexed content. Tool modules can be run independently or used by agents.
 
-- [Naptha Module Template](#naptha-module-template)
-  - [🧩 What are Naptha Modules](#-what-are-naptha-modules)
-  - [🏗 Creating a new Naptha Module](#-creating-a-new-naptha-module)
-    - [🛠 Prerequisites](#-prerequisites)
-      - [Install Poetry](#install-poetry)
-    - [🔧 Making Changes to the Module](#-making-changes-to-the-module)
-    - [Clone and Install the Module](#clone-and-install-the-module)
-      - [Making Changes to the Code](#making-changes-to-the-code)
-      - [Making Changes to the Configs](#making-changes-to-the-configs)
-  - [🧪 Testing the Module](#-testing-the-module)
-    - [🖥️ Test the Module Locally without Node](#️-test-the-module-locally-without-node)
-    - [🌐 Test the Module on a Local Node (with a Local Hub)](#-test-the-module-on-a-local-node-with-a-local-hub)
-      - [Register the new or updated Module on a local Hub](#register-the-new-or-updated-module-on-a-local-hub)
-      - [Running the Module on a local Naptha Node](#running-the-module-on-a-local-naptha-node)
-    - [☁️ Test the Module on a hosted Node (with the hosted Naptha Hub)](#️-test-the-module-on-a-hosted-node-with-the-hosted-naptha-hub)
-  - [💰 Bounties and Microgrants](#-bounties-and-microgrants)
-
-## 🧩 What are Naptha Modules
-
-Naptha Modules are the building blocks of multi-agent applications, which enable them to run across multiple nodes. There are currently five types of Modules:
-
-- **Agent Modules:** Things like Chat Agents, Task-solving Agents, ReAct Agents, etc.
-- **Tool Modules:** Things like Web Search, Python Code Execution, etc.
-- **Agent Orchestrator Modules:** Things like Organizations of Coding Agents, Social Simulations, etc.
-- **Environment Modules:** Things like Group Chats (like WhatsApp for Agents), Information Board (Reddit for Agents), Auctions (eBay for Agents), etc.
-- **Knowledge Base Modules:** Things like Wikipedia, GitHub, etc.
-- **Memory Modules:** Things like Chat History, Task History, etc.
-- **Persona Modules:** Things like Social Personas generated from exported Twitter data, or synthetically-generated Market Personas
-
-Modules are stored on GitHub, HuggingFace, IPFS, or DockerHub with the URL registered on the Naptha Hub. If you're familiar with Kubeflow Pipelines, Modules are a bit like Components. Modules are based on Poetry Python packages, with some additions like schemas, configs, and an entrypoint. A typical Module has the following structure:
-
-```
-- my_module/
-  - my_module/
-    - __init__.py
-    - configs/
-      - deployment.json
-      - environment_deployments.json
-      - llm_configs.json
-    - run.py
-    - schemas.py
-  - tests/
-    - __init__.py
-  - pyproject.toml
-  - poetry.lock
-  - README.md
-  - LICENSE
-  - .env
-  - .gitignore
-  - Dockerfile
-```
-
-You can run Modules locally, or deploy to a Naptha Node using `naptha run` commands from the [Naptha SDK](https://github.com/NapthaAI/naptha-sdk). Modules are executed within Poetry virtual environments or Docker containers on Naptha Nodes.
+## Usage
 
 ## 🏗 Creating a new Naptha Module
 

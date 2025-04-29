@@ -9,6 +9,8 @@ readme = "README.md"
 python = ">=3.10,<=3.13"
 naptha-sdk = {git = "https://github.com/NapthaAI/naptha-sdk.git"}
 python-dotenv = "^1.0.1"
+aiohttp = "^3.9.1"
+PyGithub = "^2.6.1"
 
 [build-system]
 requires = ["poetry-core"]

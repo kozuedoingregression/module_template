@@ -1,15 +1,10 @@
 [
     {
-        "name": "deployment_1",
-        "module": {"name": "module_template"},
+        "name": "tool_deployment_1",
+        "module": {"name": "github_integration_tool"},
         "node": {"ip": "localhost"},
         "config": {
-            "config_name": "config_1",
-            "llm_config": {"config_name": "model_2"},
-            "system_prompt": {
-                "role": "You are a helpful AI assistant.",
-                "persona": ""
-            }
+            "config_name": "tool_config_1"
         }
     }
 ]
