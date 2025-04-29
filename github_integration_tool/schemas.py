@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from typing import Union, Dict, Any, List, Optional
+from typing import Optional
 
 class InputSchema(BaseModel):
     tool_name: str
     repo_url: str
     file_path: Optional[str] = None
-    tool_input_data: Optional[Union[Dict[str, Any], List[Dict[str, Any]], str]] = None
+    query: Optional[str] = None
